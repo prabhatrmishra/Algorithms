@@ -1,0 +1,6 @@
+Some important notes
+1. After entering input ,it is required to enter the '$' sign.
+
+2.Here insertion sort is used to keep relative position of  pair of elements as it is(stable sort).
+
+3.Instead of insertion sorting, we can also use map,which by default remain always sorted.
