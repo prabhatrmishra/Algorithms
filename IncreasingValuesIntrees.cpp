@@ -1,89 +1,143 @@
-// C++ program to find if there is a subtree with
-// given sum
-#include<bits/stdc++.h>
+#include<iostream>
+#include<map>
+#include<vector>
+#include <algorithm>
 using namespace std;
- 
-vector<int> nodeArray;
-/* A binary tree node has data, pointer to left child
-   and a pointer to right child */
+typedef long long int ll;
 struct Node
 {
-    int data;
+    ll data;
+    struct Node * parent;
     vector<struct Node *> child_list;
+    // struct Node* left, *right;
 };
 
  
-vector<*Node> nodeArray;
-/* utility that allocates a new node with the
-given data and NULL left and right pointers. */
-struct Node* newnode(int data)
+vector< struct Node *> nodeArray;
+vector<ll> sumArray;
+map<struct Node * , ll> mp;
+
+struct Node* newnode()
 {
     struct Node* node = new Node;
     node->data = 0;
+    node->parent = NULL;
+    vector<struct Node *>child_list;
+    node->child_list = child_list;
     return (node);
 }
- 
-// function to check if there exist any subtree with given sum
-// cur_sum  --> sum of current subtree from ptr as root
-// sum_left --> sum of left subtree from ptr as root
-// sum_right --> sum of right subtree from ptr as root
-bool sumSubtreeUtil(struct Node *ptr, int *cur_sum, int sum)
+
+ll sumSubtreeUtil(struct Node *ptr,  int sum)
 {
-    // base condition
+    ll cur_sum =0 ;
     if (ptr == NULL)
     {
-        *cur_sum = 0;
-        return false;
+        return 0;
     }
- 
-    // Here first we go to left sub-tree, then right subtree
-    // then first we calculate sum of all nodes of subtree
-    // having ptr as root and assign it as cur_sum
-    // cur_sum = sum_left + sum_right + ptr->data
-    // after that we check if cur_sum == sum
-    int sum_left = 0, sum_right = 0;
-    return ( sumSubtreeUtil(ptr->left, &sum_left, sum) ||
-             sumSubtreeUtil(ptr->right, &sum_right, sum) ||
-        ((*cur_sum = sum_left + sum_right + ptr->data) == sum));
+  
+     vector<struct Node *> lst = ptr -> child_list;
+     if(lst.size() == 0)
+        {
+         //  cout<<"Leaves Node"<<ptr->data<<endl;
+            cur_sum += ptr->data;
+        }
+    else{
+         cur_sum += (ptr->data) ;
+         for(ll i = 0; i < lst.size(); i++)
+         {
+              struct Node * child = lst[i];
+              cur_sum  +=  sumSubtreeUtil(child, sum );
+         }
+    }
+    mp[ptr] =  cur_sum;
+    return cur_sum;
 }
  
 // Wrapper over sumSubtreeUtil()
-bool sumSubtree(struct Node *root, int sum)
+void sumSubtree(struct Node *root, ll sum)
 {
     // Initialize sum of subtree with root
     int cur_sum = 0;
- 
-    return sumSubtreeUtil(root, &cur_sum, sum);
+    
+    cur_sum =  sumSubtreeUtil(root,  sum);
+    mp[root] = cur_sum;
+    return;
 }
  
+void  getSum(){
+    for(ll i = nodeArray.size()-1; i >= 0; i--)
+    {
+        struct Node * curr = nodeArray[i];
+         ll sum = curr->data;
+        vector<struct Node *> cl= curr->child_list;
+        for(int j = 0; j < cl.size() ; j++)
+        {
+             struct Node * child = cl[j];
+            
+            sum += mp[child];
+        }
+        
+        mp[curr] = sum; 
+    }
+    return;
+}
 // driver program to run the case
 int main()
 {
-    int n,q x, u, v;
-    int i = n-1;
-    struct Node *root= newnode(); 
-    nodeArray.push_back(*root);
-    while(i--)
+    ll n,q, x, u, v,val;
+    cin>>n>>q>>x;
+    for(ll i = 0; i < n ; i++)
     {
-        cin>>u >> v;
-        struct Node * src = nodeArray[u-1];
-        
+         struct Node * newTemp= newnode(); 
+         nodeArray.push_back(newTemp);
     }
-    struct Node *root = newnode(8);
-    root->left    = newnode(5);
-    root->right   = newnode(4);
-    root->left->left = newnode(9);
-    root->left->right = newnode(7);
-    root->left->right->left = newnode(1);
-    root->left->right->right = newnode(12);
-    root->left->right->right->right = newnode(2);
-    root->right->right = newnode(11);
-    root->right->right->left = newnode(3);
-    int sum = 22;
- 
-    if (sumSubtree(root, sum))
-        cout << "Yes";
-    else
-        cout << "No";
-    return 0;
+   
+    for(ll i =0; i < n-1; i++)
+    {
+          cin>>u >> v;
+          struct Node * u_node = nodeArray[u-1];
+          struct Node * v_node = nodeArray[v-1];
+          vector<struct Node *> child_list  = u_node->child_list;
+          child_list.push_back(v_node);
+          u_node->child_list = child_list;
+          v_node->parent = u_node;
+
+    }
+    for(ll i = 0; i < n; i++)
+    {
+        ll val;
+        cin>>val;
+        struct Node * curr  = nodeArray[i];
+        curr->data = val; 
+    }
+    
+     //for(int i = 0; i < n; i++)
+      //   cout<<nodeArray[i]->data<<","<<endl;
+        sumSubtree(nodeArray[0],x);
+  // getSum();
+        while(q--)
+        {
+                ll a,d, val = 0;
+                cin >>d>>a;
+                struct Node * curr;
+                curr = nodeArray[d-1];
+                mp[curr] += a; 
+                struct Node * parent_node = curr->parent;
+                while(parent_node != NULL)
+                {
+                      struct Node *  _parent = parent_node;
+                      mp[parent_node] += a;
+                      parent_node = _parent ->parent;
+                }
+                // sumSubtree(nodeArray[0],x); 
+                for(ll i = 0; i < nodeArray.size(); i++ )
+                {   
+                    curr = nodeArray[i];
+              //    cout<<"Sum at node "<< i+1 <<"  : "<<mp[curr]<<endl;
+                    if(mp[curr] > x)
+                        val++;
+                }
+               cout<<val<<endl;
+    }
+   
 }
