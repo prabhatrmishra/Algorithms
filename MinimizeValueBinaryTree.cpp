@@ -88,13 +88,14 @@ int main()
    // for(int i = 0; i < N ; i++)
    //     cout<< nodeArray[i]->data<<"___"<<endl;
    waveOp(nodeArray[0]); 
+    // waveOp(nodeArray[0]); 
     // for(int i = 0; i < N ; i++)
      //   cout<< nodeArray[i]->data<<"___"<<endl;
    ll dist = minDistance(nodeArray[0]);
   // cout<<"Dis : "<< dist<<endl;
     ll sum = findTreeSum(nodeArray[0]);
-   // cout<<"Sum : "<< sum<<endl;
-   treeSum = sum + (dist+1)* X + X;
+    //cout<<"Sum : "<< sum<<endl;
+   treeSum = sum + ((dist+  2)* X);
    cout<<treeSum<<endl;
    return 0;
 }
