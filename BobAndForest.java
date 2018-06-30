@@ -1,123 +1,123 @@
 import java.util.*;
-
-  
-class A 
+class Node 
 {
-    static int findSum1(int mat[][], int k , int m, int n)
+    int data;
+    Node left, right;
+  
+    public Node(int item) 
     {
-          int res  = 0;
-           for (int i=0; i<n-k+1; i++)
-           {
-              for (int j=0; j<m-k+1; j++)
-              {
-                  int sum = 0;
-                  for (int p=i; p<k+i; p++)
-                  {
-                    
-                     for (int q=j; q<k+j; q++)
-                         sum += mat[p][q];
-                  }
-                  if(sum == (k * k))
-                      res +=1;
-              }
-           }
-        return res;
-    }    
+        data = item;
+        left = right = null;
+    }
+}
+  
+class BinaryTree 
+{
+    Node root;
+      
     
-     static int findSum(int[][] mat, int k,int m, int n)
-     {
-            int res = 0;
-            if (k > n || k >m)
+    int getMin(int x, int y) 
+    {
+        return (x < y) ? x : y;
+    }
+  
+    int waveOp( Node ptr)
+    {
+        int sum = 0;
+        if(ptr== null)
             return 0;
 
-            int stripSum[][] = new int[n][m];
-
-           
-            for (int j = 0; j < m; j++) 
-            {
-
-                       
-                        int sum = 0;
-                        for (int i = 0; i < k; i++)
-                                sum += mat[i][j];
-                        stripSum[0][j] = sum;
-
-                       
-                        for (int i = 1; i < n - k + 1; i++)
-                        {
-                            sum += (mat[i + k - 1][j] - mat[i - 1][j]);
-                            stripSum[i][j] = sum;
-                        }
-
-              }
-                for (int i = 0; i < n - k + 1; i++)
-                {
-                        int sum = 0;
-                        for (int j = 0; j < k; j++)
-                            sum += stripSum[i][j];
-                        if(sum == (k *k))
-                            res++;
-
-                        for (int j = 1; j < m - k + 1; j++) {
-                            sum += (stripSum[i][j + k - 1] - stripSum[i][j - 1]);
-                          
-                            if(sum == (k *k))
-                            res++;
-                        }
-                      
-                }
-         return res;
-     }
-    
-    static int runRobot(int[][] mat, int k, int m, int n)
-    {
-        int res = 0;
-        for(int i = 1; i <= k ; i++)
+        else
         {
-            int r= findSum(mat, i, m, n);
-          //  System.out.println("total no :  " + r);
-            res += r;
-        }
-        return res;
+            sum += ptr.data + waveOp(ptr.left) 
+                + waveOp(ptr.right);  
+        } 
+        ptr.data = sum;
+        return sum; 
     }
+    int minDistance(Node root)
+    {
+        if (root == null)
+            return 0;
+        if (root.left == null || root.right == null)
+            return 0;
+
+        return 1 + getMin(minDistance(root.left),
+                          minDistance(root.right));
+    }
+    
+   int findTreeSum(Node  root){
+        int sum = 0;
+        if(root == null )
+            return 0;
+        else 
+            sum += (root.data + findTreeSum(root.left) +
+                     findTreeSum(root.right));
+        return sum;
+}
   
     public static void main(String args[] ) throws Exception 
     {
-        int N , M, Q , K;
+         BinaryTree tree = new BinaryTree();
+        ArrayList<Node> nodeArray = new ArrayList<Node>();
         Scanner s = new Scanner(System.in);
         String name = s.nextLine();
+         int edg;
         String[] e = name.split(" ");
-         N  = Integer.valueOf(e[0]);
-         M = Integer.valueOf(e[1]);
-        int[][] mat = new int[N][M];
-        for(int i = 0 ;i < N ; i++)
+        int N  = Integer.valueOf(e[0]);
+        int X = Integer.valueOf(e[1]);
+         String val = s.nextLine();
+        String[] valString = val.split(" ");
+        for(int i = 0; i < valString.length; i++)
         {
-            String str = s.nextLine();
-            for(int j = 0; j < M ; j++)
+            Node newNode = new Node(Integer.valueOf(valString[i]));
+            nodeArray.add(newNode);
+            //System.out.println(newNode.data);
+        }
+        edg = N-1;
+        while(edg > 0) 
+        {
+            String eg = s.nextLine();
+            String[] edge = eg.split(" "); 
+            int u = Integer.valueOf(edge[0]);
+            int v = Integer.valueOf(edge[1]);
+            
+          /*  if(v == (2 * u))
             {
-                if(str.charAt(j) == '*')
-                    mat[i][j] = 1;
-                else
-                    mat[i][j] = 0;
+             Node node =nodeArray.get(u-1);
+                node.left = nodeArray.get(v-1);   
             }
-        }
-        
-       /* for (int i = 0; i < N; i++)
-        { 
-            for (int j = 0; j < M; j++)
-            { 
-                System.out.println(mat[i][j]) ;
+            
+            else if( u == (2 * v))
+           nodeArray.get(v-1).left = nodeArray.get(u-1);
+            else if(v == (2 * u + 1))
+            nodeArray.get(u-1).right = nodeArray.get(v-1);
+            else if(u == (2 * v + 1))
+            nodeArray.get(v-1).right = nodeArray.get(u-1);
+            */
+            if(v >u)
+            {
+                if(nodeArray.get(u-1).left == null)
+                     nodeArray.get(u-1).left = nodeArray.get(v-1);
+                else if(nodeArray.get(u-1).right == null)
+                      nodeArray.get(u-1).right = nodeArray.get(v-1);
             } 
-        } */
-        
-         Q = s.nextInt();
-        while(Q >0)
-        {
-            K = s.nextInt();
-           System.out.println(runRobot(mat, K, M, N));
-            Q--;
+            else if(v <u)
+            {
+                if(nodeArray.get(v-1).left == null)
+                     nodeArray.get(v-1).left = nodeArray.get(u-1);
+                else if(nodeArray.get(v-1).right == null)
+                      nodeArray.get(v-1).right = nodeArray.get(u-1);
+            } 
+            edg--;
         }
-        return ;
+         tree.waveOp(nodeArray.get(0)); 
+    
+        int dist = tree.minDistance(nodeArray.get(0));
+ 
+        int sum = tree.findTreeSum(nodeArray.get(0));
+        int treeSum = sum + ((dist +  2)* X);
+        System.out.println(treeSum);
     }                     
 }
   
