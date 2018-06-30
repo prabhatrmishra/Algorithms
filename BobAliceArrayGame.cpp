@@ -26,7 +26,8 @@ int main()
     
     if((N % 2) == 1)
     {
-        start = end = (N/2) +1;
+        start =  (N/2);
+        end = start;
         turn = odd;
     }
     else
@@ -35,8 +36,18 @@ int main()
         end = (N/2);
         turn = even;
     }
-    flag = 1;
-    oddSelect = 0;
+    if(turn == odd )
+    {
+       alex_score = a[start];
+        start --;
+        end ++;
+        turn = even; flag  = 1; 
+    }
+    else
+    {
+         flag = 0;
+    }
+   
     while((start >= 0) || (end < N) )
     {
         int val ;
@@ -72,6 +83,10 @@ int main()
         flag = 1-flag;
     }
 }
-    
+    ll diff = abs(alex_score -bob_score);
+    if(alex_score >= bob_score)
+        cout<<"Alex" << diff<<endl;
+    else
+        cout<<"Bob" << diff << endl;
     return 0;
 }
