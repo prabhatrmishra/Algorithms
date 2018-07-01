@@ -1,9 +1,10 @@
 #include<iostream>
 #include<vector>
+#include <cmath>
 using namespace std;
 typedef unsigned long long  ll; 
-typedef even 1;
-typedef odd 0;
+#define even 1
+#define odd 0
 ll a[200000];
 int getMaxIndex(int start ,int end)
 {
@@ -12,9 +13,17 @@ int getMaxIndex(int start ,int end)
     else
         return end;
 }
+
+ll getAbsDiff(ll a , ll b)
+{
+    if(a >= b )
+        return (a - b);
+    else
+        return (b - a);
+}
 int main()
 {
-    ll N, val, alex_score, bob_score ;
+    ll N, val, alex_score = 0, bob_score = 0 ;
     int start, end;  
     int flag , turn , oddSelect;
     cin>>N;
@@ -38,7 +47,7 @@ int main()
     }
     if(turn == odd )
     {
-       alex_score = a[start];
+       alex_score += a[start];
         start --;
         end ++;
         turn = even; flag  = 1; 
@@ -50,6 +59,7 @@ int main()
    
     while((start >= 0) || (end < N) )
     {
+        //cout<<"Start : "<< start<<"End : "<<end<<endl;
         int val ;
         if((turn == odd) && (oddSelect == 0)  )
         {
@@ -64,6 +74,7 @@ int main()
         if(turn == even)
         {
             int index = getMaxIndex(start , end);
+          //  cout<<"Index : "<< index<<endl;
              val = a[index];
             if(index == start)
             {
@@ -77,16 +88,27 @@ int main()
             }
         }
         if(flag == 0 )
-            alex_score += val;
+        {
+             alex_score += val;
+           // cout<<"Alex Score : "<< alex_score<<endl;
+        }
+           
         else
-            bob_score += val;
+        {
+            bob_score += val;  
+            //cout<<"Bob Score : "<< bob_score<<endl;
+        }
+    
         flag = 1-flag;
+        turn = 1- turn;
     }
-}
-    ll diff = abs(alex_score -bob_score);
+    cout<<alex_score<<endl;
+    cout<< bob_score<<endl;
+    ll diff = getAbsDiff(alex_score, bob_score);
+    
     if(alex_score >= bob_score)
-        cout<<"Alex" << diff<<endl;
+        cout<<"Alex " << diff<<endl;
     else
-        cout<<"Bob" << diff << endl;
+        cout<<"Bob " << diff << endl;
     return 0;
 }
